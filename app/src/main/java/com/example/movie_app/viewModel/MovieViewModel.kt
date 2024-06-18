@@ -7,10 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movie_app.models.Data
 import kotlinx.coroutines.launch
+
 // MovieViewModel implements ViewModel
 class MovieViewModel : ViewModel() {
 
-    private val repository = Repository() //we will fetch the data repository: An instance of Repository, which is  used to fetch data, such as a list of movies.
+    private val repository = Repository()
+    //we will fetch the data repository:
+    // An instance of Repository, which is  used to fetch data, such as a list of movies.
     var state by mutableStateOf(ScreenState())
 
     init {
@@ -31,6 +34,6 @@ class MovieViewModel : ViewModel() {
 
 data class ScreenState(
     val movies: List<Data> = emptyList(),
-    val title: String = "",
+
     val page: Int = 1,
 )
