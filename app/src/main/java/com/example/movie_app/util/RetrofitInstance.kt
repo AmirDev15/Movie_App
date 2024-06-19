@@ -15,7 +15,7 @@ object RetrofitInstance {
         Retrofit.Builder().baseUrl(util.Base).addConverterFactory(
             GsonConverterFactory.create()
         ).build().create(ApiInterface::class.java)
-
+ 
     }
 
 

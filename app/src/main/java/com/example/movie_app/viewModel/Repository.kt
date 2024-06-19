@@ -1,5 +1,6 @@
 package com.example.movie_app.viewModel
 
+import com.example.movie_app.models.Details
 import com.example.movie_app.models.MoviesList
 import com.example.movie_app.util.RetrofitInstance
 import retrofit2.Response
@@ -18,5 +19,8 @@ class Repository {
         return RetrofitInstance.api.getMovies(page)
     }
 
-}
+    suspend fun getDetailsById(id: Int): Response<Details> {
+        return RetrofitInstance.api.getDetailsById(id=id)
+    }
 
+}

@@ -94,19 +94,14 @@ fun BannerScreen(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent, RoundedCornerShape(8.dp)),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        unfocusedBorderColor = Color.Gray,
-                        focusedBorderColor = Color.White,
 
-                        cursorColor = Color.White
-                    )
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
                     onClick = {
-                        navController.navigate("HomeScreen")
+                        navController.navigate("Home Screen")
                     },
                     modifier = Modifier
                         .fillMaxWidth()
