@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movie_app.models.Data
 import com.example.movie_app.models.Details
+import com.mkrdeveloper.movieinfoappmvvm.paging.PaginationFactory
 import kotlinx.coroutines.launch
 
 // MovieViewModel implements ViewModel
@@ -18,17 +19,50 @@ class MovieViewModel : ViewModel() {
     // An instance of Repository, which is  used to fetch data, such as a list of movies.
     var state by mutableStateOf(ScreenState())
     var id by mutableStateOf(0)
-
-    init {
-        //This launches a coroutine in the viewModelScope, which is tied to the ViewModel's lifecycle.
-        // When the ViewModel is cleared, the coroutine will be automatically canceled.
-        viewModelScope.launch {
-            val response = repository.getMovieList(state.page)
+    private val pagination = PaginationFactory(
+        initialPage = state.page,
+        onLoadUpdated = {
             state = state.copy(
-                movies = response.body()!!.data
+                isLoading = it
+            )
+        },
+        onRequest = {nextPage ->
+            repository.getMovieList(nextPage)
+        },
+        getNextKey = {
+            state.page + 1
+        },
+        onError = {
+            state = state.copy(error = it?.localizedMessage)
+        },
+        onSuccess = {items, newPage ->
+            state = state.copy(
+                movies = state.movies + items.data,
+                page = newPage,
+                endReached = state.page == 25
             )
         }
+    )
 
+//    init {
+//        //This launches a coroutine in the viewModelScope, which is tied to the ViewModel's lifecycle.
+//        // When the ViewModel is cleared, the coroutine will be automatically canceled.
+//        viewModelScope.launch {
+//            val response = repository.getMovieList(state.page)
+//            state = state.copy(
+//                movies = response.body()!!.data
+//            )
+//        }
+//
+//    }
+init {
+    loadNextItems()
+}
+
+    fun loadNextItems() {
+        viewModelScope.launch {
+            pagination.loadNextPage()
+        }
     }
 
     fun getDetailsById() {
@@ -51,6 +85,9 @@ class MovieViewModel : ViewModel() {
 }
 data class ScreenState(
     val movies: List<Data> = emptyList(),
-    val detailsData: Details = Details(),
     val page: Int = 1,
+    val detailsData: Details = Details(),
+    val endReached: Boolean = false,
+    val error: String? = null,
+    val isLoading: Boolean = false
 )
