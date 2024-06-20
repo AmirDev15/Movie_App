@@ -14,13 +14,16 @@ import com.example.movie_app.models.Details
 
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Banner Screen") {
+    NavHost(navController = navController, startDestination = "Start Up") {
 
-        composable("Banner Screen") {
-            BannerScreen(navController = navController)
+        composable("Login Screen") {
+            Login(navController = navController)
         }
         composable("Home Screen") {
             HomeScreen(navController = navController)
+        }
+        composable("Start Up") {
+            Start_Up(navController = navController)
         }
 
         composable("Details screen/{id}",
@@ -33,7 +36,7 @@ fun Navigation() {
             )
         ) { id -> // Lambda function receiving NavBackStackEntry
             id.arguments?.getInt("id")?.let { id1 -> // Safely retrieve the "id" argument as an integer
-                DetailsScreen(id = id1) // Pass the retrieved id to the DetailsScreen composable
+                DetailsScreen(navController = navController,id = id1) // Pass the retrieved id to the DetailsScreen composable
             }
         }
 

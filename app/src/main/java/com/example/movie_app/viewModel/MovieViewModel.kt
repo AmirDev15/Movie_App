@@ -8,12 +8,37 @@ import androidx.lifecycle.viewModelScope
 import com.example.movie_app.models.Data
 import com.example.movie_app.models.Details
 import com.mkrdeveloper.movieinfoappmvvm.paging.PaginationFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 // MovieViewModel implements ViewModel
 class MovieViewModel : ViewModel() {
 
     private val repository = Repository()
+    private val _networkAvailable = MutableStateFlow(true)
+    val networkAvailable: StateFlow<Boolean> = _networkAvailable
+
+    // Example function to start network observing
+    fun startNetworkObserving() {
+        // Replace with your actual network monitoring logic
+        viewModelScope.launch {
+            // Simulate network monitoring (replace with actual implementation)
+            // Example: ConnectivityManager or NetworkRequest API in Android
+            // This is a simulated example
+            while (true) {
+                val isNetworkAvailable = isNetworkAvailable()
+                _networkAvailable.value = isNetworkAvailable
+                kotlinx.coroutines.delay(1000) // Delay to simulate periodic check
+            }
+        }
+    }
+
+    // Example function to check network availability
+    private fun isNetworkAvailable(): Boolean {
+        // Replace with your actual network connectivity check
+        return true // Example: Always return true for simulation
+    }
 
     //we will fetch the data repository:
     // An instance of Repository, which is  used to fetch data, such as a list of movies.
@@ -26,7 +51,7 @@ class MovieViewModel : ViewModel() {
                 isLoading = it
             )
         },
-        onRequest = {nextPage ->
+        onRequest = { nextPage ->
             repository.getMovieList(nextPage)
         },
         getNextKey = {
@@ -35,7 +60,7 @@ class MovieViewModel : ViewModel() {
         onError = {
             state = state.copy(error = it?.localizedMessage)
         },
-        onSuccess = {items, newPage ->
+        onSuccess = { items, newPage ->
             state = state.copy(
                 movies = state.movies + items.data,
                 page = newPage,
@@ -44,7 +69,7 @@ class MovieViewModel : ViewModel() {
         }
     )
 
-//    init {
+    //    init {
 //        //This launches a coroutine in the viewModelScope, which is tied to the ViewModel's lifecycle.
 //        // When the ViewModel is cleared, the coroutine will be automatically canceled.
 //        viewModelScope.launch {
@@ -55,9 +80,9 @@ class MovieViewModel : ViewModel() {
 //        }
 //
 //    }
-init {
-    loadNextItems()
-}
+    init {
+        loadNextItems()
+    }
 
     fun loadNextItems() {
         viewModelScope.launch {
@@ -83,11 +108,12 @@ init {
     }
 
 }
+
 data class ScreenState(
     val movies: List<Data> = emptyList(),
     val page: Int = 1,
     val detailsData: Details = Details(),
     val endReached: Boolean = false,
     val error: String? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )

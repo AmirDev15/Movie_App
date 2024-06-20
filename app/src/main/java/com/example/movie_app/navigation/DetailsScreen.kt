@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,14 +38,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.movie_app.R
 import com.example.movie_app.models.Details
 import com.example.movie_app.viewModel.MovieViewModel
-
-
 @Composable
-fun DetailsScreen(id: Int) {
+fun DetailsScreen(navController: NavHostController, id: Int) {
     val movieViewModel = viewModel<MovieViewModel>()
     movieViewModel.id = id
     movieViewModel.getDetailsById()
@@ -59,22 +61,34 @@ fun DetailsScreen(id: Int) {
         ForegroundPoster(details = details)
         Column(
             Modifier
-                .padding(start = 20.dp, end = 20.dp, bottom = 50.dp)
+                .padding(horizontal = 20.dp, vertical = 16.dp)
                 .align(Alignment.BottomCenter),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
                 text = details.title,
                 modifier = Modifier.fillMaxWidth(),
-                fontSize = 38.sp,
+                fontSize = 24.sp,
                 color = Color.White,
-                lineHeight = 40.sp,
                 textAlign = TextAlign.Center
             )
             Rating(details = details, modifier = Modifier)
-            TextBuilder(icon = Icons.Filled.Info, title = "Summery:", bodyText = details.plot)
+            TextBuilder(icon = Icons.Filled.Info, title = "Summary:", bodyText = details.plot)
             TextBuilder(icon = Icons.Filled.Person, title = "Actors:", bodyText = details.actors)
             ImageRow(details = details)
+        }
+        // Back Arrow
+        IconButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
         }
     }
 }
@@ -99,27 +113,29 @@ fun ImageRow(details: Details) {
 
 @Composable
 fun TextBuilder(icon: ImageVector, title: String, bodyText: String) {
-    Row {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Person",
-            tint = Color.White
-        )
-        Text(
-            text = title,
-            Modifier.padding(start = 10.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
+        Text(text = bodyText, color = Color.White)
     }
-    Text(text = bodyText, color = Color.White)
 }
 
 @Composable
 fun Rating(details: Details, modifier: Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        Icon(imageVector = Icons.Filled.Star, contentDescription = "", tint = Color.White)
+        Icon(imageVector = Icons.Filled.Star, contentDescription = null, tint = Color.White)
         Text(
             text = details.rated,
             modifier.padding(start = 6.dp),
@@ -128,7 +144,7 @@ fun Rating(details: Details, modifier: Modifier) {
         Spacer(modifier = modifier.width(25.dp))
         Icon(
             painter = painterResource(id = R.drawable.time_24),
-            contentDescription = "",
+            contentDescription = null,
             tint = Color.White
         )
         Text(
@@ -137,7 +153,7 @@ fun Rating(details: Details, modifier: Modifier) {
             color = Color.White
         )
         Spacer(modifier = modifier.width(25.dp))
-        Icon(imageVector = Icons.Filled.DateRange, contentDescription = "", tint = Color.White)
+        Icon(imageVector = Icons.Filled.DateRange, contentDescription = null, tint = Color.White)
         Text(
             text = details.released,
             modifier.padding(start = 6.dp),
@@ -148,7 +164,6 @@ fun Rating(details: Details, modifier: Modifier) {
 
 @Composable
 fun ForegroundPoster(details: Details) {
-
     Box(
         modifier = Modifier
             .wrapContentHeight()
@@ -207,5 +222,4 @@ fun BackGroundPoster(details: Details) {
                 )
         )
     }
-
 }
