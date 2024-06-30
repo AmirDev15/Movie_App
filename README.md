@@ -1,4 +1,4 @@
-Movie App
+
 A movie app that retrieves movie data from an API and displays it to users. The app consists of several pages including a startup page, login page, home page displaying all retrieved movies, and a detailed page for viewing movie details.
 
 Packages
