@@ -23,7 +23,12 @@ object RetrofitInstance {
 
 
 }
-
+//object MoshiInstance {
+//    val moshi: Moshi = Moshi.Builder()
+//        // Add any additional configuration as needed
+//        .addLast(KotlinJsonAdapterFactory())
+//        .build()
+//}
 //
 //
 //object RetrofitInstance {
